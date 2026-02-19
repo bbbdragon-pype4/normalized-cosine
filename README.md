@@ -47,4 +47,4 @@ To see the function running on a simple example, you can run:
 ```
 python similarity.py
 ```
-The usage is found in the `__main__` method in this text.
+The usage is found in the `__main__` method in this text.  The method used here is `submit_query`.  
