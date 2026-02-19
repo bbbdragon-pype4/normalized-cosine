@@ -1,0 +1,70 @@
+'''
+python3 watch_file.py -p1 python3 embeddings.py -d .
+'''
+import os
+from openai import OpenAI
+from dotenv import load_dotenv
+from typing import List,Union
+import numpy as np
+import tiktoken
+
+load_dotenv()
+
+OPENAI_KEY=os.environ['OPENAI_KEY']
+OPENAI_EMBEDDING_MODEL=os.environ['OPENAI_EMBEDDING_MODEL']
+TIKTOKEN_ENCODING=tiktoken.get_encoding("cl100k_base")
+
+
+def get_client(key=OPENAI_KEY):
+
+    return OpenAI(api_key=key)
+
+
+CLIENT=get_client()
+
+def get_embeddings(strings: str|List[str], 
+                   model=OPENAI_EMBEDDING_MODEL,
+                   client=CLIENT,
+                  ):
+    
+    if not isinstance(strings,list):
+
+        strings=[strings]
+
+
+    response=client.embeddings.create(model=model,
+                                      input=strings,
+                                      encoding_format="float", 
+                                      dimensions=3072,
+                                     )
+    
+    embeddings=[]
+
+    for data in response.data:
+
+        v=data.embedding
+        #v+=np.abs(np.min(v))
+        v/=np.linalg.norm(v)
+
+        embeddings.append(v)
+
+    return np.array(embeddings)
+
+    
+def num_tokens(st,encoding=TIKTOKEN_ENCODING):
+
+    return len(encoding.encode(st))
+
+
+if __name__=='__main__':
+
+    s1='''
+    I haven’t set it (PYTHONPATH) before; what I am doing just go with command prompt and type CMD anywhere (since python.exe is in my shell PATH). If I try to access Window ENVIRONMENT variable, it gives mapped value but the problem with Python ENVIRONMENT variable like; PYTHONPATH and PYTHONHOME.
+    '''
+    s2='''
+    I try to access the environment.
+    '''
+    embeddings=get_embeddings([s1,s2])
+    
+    
+    print(embeddings.shape)
