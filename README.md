@@ -38,6 +38,8 @@ cp dotenv_example.txt .env
 cat .env
 OPENAI_KEY="key"
 OPENAI_EMBEDDING_MODEL="text-embedding-3-large"
+OPENAI_EMBEDDING_DIMENSIONS=3072
+TIKTOKEN_MODEL="cl100k_base"
 ```
 Replace `key` with your OpenAI API key.  If you would like to use a different model, change `OPENAI_EMBEDDING_MODEL`.
 
