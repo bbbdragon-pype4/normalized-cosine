@@ -1,0 +1,6 @@
+First, let's grab the tokenizer blob URL from the source on your remote machine. If we trace the get_encoding function, we find it calls a function from tiktoken_ext.openai_public which has the blob URIs for each encoder. Identify the correct function, then print the source
+Now, navigate to the blob URL on your local machine to download it.
+Note: for old versions of tiktoken, Step 1 would have yielded you an Azure blob URI (like az://openaipublic/encodings/cl100k_base.tiktoken); if this is the case, head to the latest source here and grab a non-azure link for downloading purposes only.
+Now, transfer the file to your remote machine to a new folder. Tracing the get_encoding function further reveals a call to tiktoken.load.read_file_cached() which indicates the file needs to be renamed. To get the name for the file, run the following code (pulled from source):
+The read_file_cached function then checks environment variables for a cache path and reads from there, so lets set that up:
+This code snippet will need to be run every time you need tiktoken.
