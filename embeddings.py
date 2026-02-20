@@ -2,6 +2,7 @@
 python3 watch_file.py -p1 python3 embeddings.py -d .
 '''
 import os
+import openai
 from openai import OpenAI
 from dotenv import load_dotenv
 from typing import List,Union
@@ -19,13 +20,13 @@ OPENAI_EMBEDDING_MODEL=os.environ['OPENAI_EMBEDDING_MODEL']
 TIKTOKEN_ENCODING=tiktoken.get_encoding("cl100k_base")
 
 
-def get_client(key=OPENAI_KEY):
+def get_client(key=OPENAI_KEY) -> openai.OpenAI:
 
     return OpenAI(api_key=key)
 
 
 CLIENT=get_client()
-print(type(CLIENT))
+
 
 #############
 # FUNCTIONS #
