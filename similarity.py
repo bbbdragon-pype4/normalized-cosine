@@ -2,7 +2,7 @@
 python3 watch_file.py -p1 python3 similarity.py -d .
 '''
 from embeddings import get_embeddings
-from typing import List,Union,Tuple
+from typing import List,Union,Tuple,List,Dict
 import numpy as np
 import tiktoken
 from operator import itemgetter
@@ -15,7 +15,7 @@ def vectors_and_lengths(strings:List[str],
                        ) -> Tuple[np.array,np.array]:
 
     vecs=get_embeddings(strings)
-    lengths=np.log([len(encoder.encode(st)) for st in strings])
+    lengths=np.array([np.log(len(encoder.encode(st))) for st in strings])
 
     return lengths,vecs
 
@@ -24,7 +24,7 @@ def submit_query(q:str,
                  strings:List[str],
                  lengths:np.array=None,
                  precomputedEmbeddings:np.array=None,
-                ):
+                ) -> List[Dict]:
 
     if precomputedEmbeddings is None or lengths is None:
 
@@ -38,7 +38,7 @@ def submit_query(q:str,
     similarities=np.dot(embeddings,queryEmbedding)
     similarities*=diffs
     distancesAndStrings=[{'string':st,
-                          'similarity':sim,
+                          'similarity':float(sim),
                          } for (st,sim) in zip(strings,similarities)]
     distancesAndStrings=sorted(distancesAndStrings,
                                key=itemgetter('similarity'),
