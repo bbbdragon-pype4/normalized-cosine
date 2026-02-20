@@ -17,7 +17,9 @@ load_dotenv()
 
 OPENAI_KEY=os.environ['OPENAI_KEY']
 OPENAI_EMBEDDING_MODEL=os.environ['OPENAI_EMBEDDING_MODEL']
-TIKTOKEN_ENCODING=tiktoken.get_encoding("cl100k_base")
+OPENAI_EMBEDDING_DIMENSIONS=int(os.environ['OPENAI_EMBEDDING_DIMENSIONS'])
+TIKTOKEN_MODEL=os.environ['TIKTOKEN_MODEL']
+TIKTOKEN_ENCODING=tiktoken.get_encoding(TIKTOKEN_MODEL)
 
 
 def get_client(key=OPENAI_KEY) -> openai.OpenAI:
@@ -33,8 +35,9 @@ CLIENT=get_client()
 #############
 
 def get_embeddings(strings: str|List[str], 
-                   model=OPENAI_EMBEDDING_MODEL,
-                   client=CLIENT,
+                   model:str=OPENAI_EMBEDDING_MODEL,
+                   client:openai.OpenAI=CLIENT,
+                   dimensions:int=OPENAI_EMBEDDING_DIMENSIONS,
                   ) -> np.array:
     '''
     Gathers embeddings and postprocesses them:
@@ -51,7 +54,7 @@ def get_embeddings(strings: str|List[str],
     response=client.embeddings.create(model=model, # (2)
                                       input=strings,
                                       encoding_format="float", 
-                                      dimensions=3072,
+                                      dimensions=dimensions,
                                      )
     
     embeddings=[] # (3)
