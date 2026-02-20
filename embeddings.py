@@ -10,6 +10,10 @@ import tiktoken
 
 load_dotenv()
 
+#############
+# CONSTANTS #
+#############
+
 OPENAI_KEY=os.environ['OPENAI_KEY']
 OPENAI_EMBEDDING_MODEL=os.environ['OPENAI_EMBEDDING_MODEL']
 TIKTOKEN_ENCODING=tiktoken.get_encoding("cl100k_base")
@@ -21,29 +25,39 @@ def get_client(key=OPENAI_KEY):
 
 
 CLIENT=get_client()
+print(type(CLIENT))
+
+#############
+# FUNCTIONS #
+#############
 
 def get_embeddings(strings: str|List[str], 
                    model=OPENAI_EMBEDDING_MODEL,
                    client=CLIENT,
-                  ):
-    
-    if not isinstance(strings,list):
+                  ) -> np.array:
+    '''
+    Gathers embeddings and postprocesses them:
+
+    1) Ensures a list of strings is submitted.
+    2) Sends a response to the OpenAI API.
+    3) Postprocesses the embeddings, ensuring they are L2-normalized.
+    '''
+    if not isinstance(strings,list): # (1)
 
         strings=[strings]
 
 
-    response=client.embeddings.create(model=model,
+    response=client.embeddings.create(model=model, # (2)
                                       input=strings,
                                       encoding_format="float", 
                                       dimensions=3072,
                                      )
     
-    embeddings=[]
+    embeddings=[] # (3)
 
     for data in response.data:
 
         v=data.embedding
-        #v+=np.abs(np.min(v))
         v/=np.linalg.norm(v)
 
         embeddings.append(v)
