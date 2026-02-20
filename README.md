@@ -48,3 +48,12 @@ To see the function running on a simple example, you can run:
 python similarity.py
 ```
 The usage is found in the `__main__` method in this text.  The method used here is `submit_query`.  
+
+You can also use a file interface to get a feel for the functionality.  Run:
+```
+python3 run_query_from_files.py example_data/query.txt example_data/strings.txt
+```
+The first argument, which contains the query, can also be a string:
+```
+python3 run_query_from_files.py "get blob" example_data/strings.txt 
+```
