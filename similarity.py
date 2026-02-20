@@ -8,7 +8,16 @@ import tiktoken
 from operator import itemgetter
 import pprint as pp
 
+#############
+# CONSTANTS #
+#############
+
 ENCODER=tiktoken.get_encoding("cl100k_base")
+
+
+#############
+# FUNCTIONS #
+#############
 
 def vectors_and_lengths(strings:List[str],
                         encoder:tiktoken.core.Encoding=ENCODER,
