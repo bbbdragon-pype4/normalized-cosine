@@ -2,7 +2,7 @@
 python3 watch_file.py -p1 python3 similarity.py -d .
 '''
 from embeddings import get_embeddings
-from typing import List,Union,Tuple,List,Dict
+from typing import List,Union,Tuple,List,Dict,Set
 import numpy as np
 import tiktoken
 from operator import itemgetter
@@ -18,6 +18,28 @@ def vectors_and_lengths(strings:List[str],
     lengths=np.array([np.log(len(encoder.encode(st))) for st in strings])
 
     return lengths,vecs
+
+
+def strong_recommendations(ranking:np.array,
+                           similarities:np.array,
+                           diffs:np.array,
+                           strings:List[str]) -> Set[str]:
+
+    recommendations={}
+
+    for (rank,similarity,diff,st) in zip(ranking,similarities,diffs,strings):
+
+        if rank > 1:
+
+            invDiff=1/(diff+1e-10)
+            interval1=np.abs(sim-invDiff)
+            interval2=np.ans(1-sim)
+
+            if interval1 > interval2:
+
+                recommendations.add(st)
+
+    return recommendations
 
 
 def submit_query(q:str,
@@ -36,12 +58,30 @@ def submit_query(q:str,
     
     diffs=lengths-queryLength
     similarities=np.dot(embeddings,queryEmbedding)
-    similarities*=diffs
+    ranking=similarities*diffs
+    recommendations=strong_recommendations(ranking,similarities,diffs,strings)
+
+    def recommendation_f(st,rnk):
+
+        if rnk > 1:
+
+            return 'probable string inclusion'
+
+        elif st in recommendations:
+
+            return 'strong probability of string inclusion'
+
+        else:
+
+            return 'undetermined'
+
+
     distancesAndStrings=[{'string':st,
-                          'similarity':float(sim),
-                         } for (st,sim) in zip(strings,similarities)]
+                          'ranking':float(rnk),
+                          'recommendation':recommendation_f(st,rnk),
+                         } for (st,rnk) in zip(strings,ranking)]
     distancesAndStrings=sorted(distancesAndStrings,
-                               key=itemgetter('similarity'),
+                               key=itemgetter('ranking'),
                                reverse=True,
                               )
 
