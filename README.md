@@ -41,7 +41,7 @@ OPENAI_EMBEDDING_MODEL="text-embedding-3-large"
 OPENAI_EMBEDDING_DIMENSIONS=3072
 TIKTOKEN_MODEL="cl100k_base"
 ```
-Replace `key` with your OpenAI API key.  If you would like to use a different model, change `OPENAI_EMBEDDING_MODEL`.
+Replace `key` with your OpenAI API key.  If you would like to use a different model, change `OPENAI_EMBEDDING_MODEL`.  Be sure that the dimensions match the model, by changing `OPENAI_EMBEDDING_DIMENSIONS`.
 
 ## Running
 
