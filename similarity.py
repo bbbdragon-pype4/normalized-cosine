@@ -1,7 +1,7 @@
 '''
 python3 watch_file.py -p1 python3 similarity.py -d .
 '''
-from embeddings import get_embeddings
+from embeddings import get_embeddings, num_tokens
 from typing import List,Union,Tuple,List,Dict,Set
 import numpy as np
 import tiktoken
@@ -26,7 +26,7 @@ def vectors_and_lengths(strings:List[str],
     Helper to extract embeddings and log token counts for a list of strings.
     '''
     vecs=get_embeddings(strings)
-    lengths=np.array([np.log(len(encoder.encode(st))) for st in strings])
+    lengths=np.array([np.log(num_tokens(st)) for st in strings])
 
     return lengths,vecs
 
