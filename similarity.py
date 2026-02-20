@@ -9,13 +9,6 @@ from operator import itemgetter
 import pprint as pp
 
 #############
-# CONSTANTS #
-#############
-
-ENCODER=tiktoken.get_encoding("cl100k_base")
-
-
-#############
 # FUNCTIONS #
 #############
 
